@@ -21,3 +21,7 @@ _(GiveItAName) $pip -r install requirements.txt_
 ## Run The Python Program:
 _$python main.py_
 
+
+
+## Run The Python Unit Test:
+_(GiveItAName)$pytest whatever_test.py_
