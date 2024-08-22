@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk  #using PIL to convert JPG images to something Tkinter can use 
 from API.api2 import getWeather
+from GUI.SaveFavGui import openFavorite
 from ImageSelector.ImageSelector import backgroundSelector
 
 def createGUI():
@@ -32,6 +33,11 @@ def createGUI():
     # Create a button which will be used to toggle current to 7-day forecast
     toggle = tk.Button(rootWindow, text="7-day", command=checkDisplay, bg='white', fg='black')
     toggle.pack(pady=10)
+
+    # a button widget which will open a 
+    # new window on button click
+    fav = tk.Button(rootWindow, text ="Favorite", command = openFavorite, bg='white', fg='black')
+    fav.pack(pady = 10)
 
     #Loading images
     #Tkinter does not support JPG.
