@@ -1,8 +1,8 @@
 import requests
 
-def getWeather():
+def getWeather(location="Miami"):
     api_key = "2b203ba661da5209df1f2665830b8914"  # API keys go here
-    city = "Miami"
+    city = location
     
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
 
