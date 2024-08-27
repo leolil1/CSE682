@@ -1,3 +1,4 @@
-from GUI.gui import createGUI
+from GUI.gui import GUI
 
-createGUI()
+gui=GUI(800,900)
+gui.createGUI()
