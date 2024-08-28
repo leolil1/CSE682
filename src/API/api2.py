@@ -1,9 +1,14 @@
 import requests
 
+# API class will be used to make API calls to
+# OpenWeather API.
 class API:
+    #Constructor that has a valid key to use to make API calls.
+    #User can also supply their own.
     def __init__(self,api_key="2b203ba661da5209df1f2665830b8914"):
         self.api_key=api_key # API keys go here
 
+    #Function to make the API call leveging the requests library
     def getWeather(self,location="Miami"):
         city = location
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={self.api_key}"
