@@ -30,13 +30,13 @@ class SaveFavWindow:
         # Create a button when user click it'll save the entry
         # in the textbox to the fav.txt file. We allow 5 favs
         # so 5 entry is specified as the second parameter.
-        self.saveButton = guiButton(self.rootWindow, x=150, y=20,text ="Save To Favorites", command =lambda: self.__writeData("fav.txt",5))
+        self.saveButton = guiButton(self.rootWindow, x=150, y=20, text="Save To Favorites", command =lambda: self.__writeData("fav.txt",5))
         
         # Create a button when user click it'll set the default
         # to the entry in the textbox. The default location info
         # is saved to default.txt. And only 1 entry is needed
         # for default.
-        self.defaultButton = guiButton(self.rootWindow, x=300, y=20,text ="Set As Default", command =lambda: self.__writeData("default.txt",1))
+        self.defaultButton = guiButton(self.rootWindow, x=300, y=20, text="Set As Default", command=self.__saveDefault)
         
         # Initial Fav location list
         self.__genFavList()
@@ -74,6 +74,16 @@ class SaveFavWindow:
         # working with the favoriate list instead of setting default.
         if file=="fav.txt":
             self.__genFavList()
+    
+    # Function to save one of the favorite to default.txt file
+    def __saveDefault(self):
+        # Get the currently selected location from the radio buttons
+        location = self.selected_location.get()
+
+        # Write the selected location to the default.txt file
+        with open("default.txt", "w") as file1:
+            file1.write(location + "\n")
+        file1.close()
 
     # Function to create the Favoraite location list
     def __genFavList(self):
@@ -106,6 +116,34 @@ class SaveFavWindow:
                 # Command is to call the checkDisplay() function from the GUI class. We pass the location info of the
                 # current selected location to that function.
                 radio_button = Radiobutton(self.rootWindow, text=line, value=line, variable=self.selected_location, indicatoron=0,background="light blue",command=lambda:self.gui.checkDisplay(self.selected_location.get()))
-                
                 # Position each radio button 30 pixels down
-                radio_button.place(x=20, y=60 + i * 30)
+                radio_button.place(x=45, y=60 + i * 30)
+                
+                # Create a list of buttons that will be used to remove favoriates.
+                deleteButton = guiButton(self.rootWindow, x=150, y=20,text ="x", command=lambda location=line: self.__removeLocation(location))
+                # Because the buttonis inherited from tk button class, so we can then use 
+                # .place() function inherited from parent class to place these buttons 
+                # next to our radio buttons above.
+                deleteButton.place(x=20, y=60 + i * 30)
+    
+    # Function to remove the favoriate locations.
+    def __removeLocation(self, location):
+        # Read data from favoriate location file
+        with open("fav.txt", "r") as file1:
+            data = file1.readlines()
+        file1.close()
+
+        # Remove the selected location from the list
+        new_data = []
+        for line in data:
+            if line.strip() != location:
+                new_data.append(line)
+        data = new_data
+
+        # Write the updated list back to the file
+        with open("fav.txt", "w") as file1:
+            file1.writelines(data)
+        file1.close()
+
+        # Update the favorite locations list
+        self.__genFavList()
