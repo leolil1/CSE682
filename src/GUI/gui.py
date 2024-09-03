@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import END
 from PIL import Image, ImageTk  #using PIL to convert JPG images to something Tkinter can use 
 from API.api2 import API
-from GUI.SaveFavGui import openFavorite
+from GUI.SaveFavGui import SaveFavWindow
 from GUI.Button import guiButton
 from GUI.Textbox import guiTextbox
 from GUI.Label import guiLabel
@@ -39,11 +39,18 @@ class GUI:
         self.weather_label_image.pack(pady=10)
 
         # Using the button class Create a button which will be used to toggle current to 7-day forecast
-        toggle_button = guiButton(rootWindow, x=700, y=30,text="7-day", command=self.__checkDisplay)
+        toggle_button = guiButton(rootWindow, x=700, y=30,text="7-day", command=self.checkDisplay)
 
         # a button widget which will open a 
-        # new window on button click
-        fav = guiButton(rootWindow, x=150, y=150,text ="Favorite", command = openFavorite)
+        # new window on button click.
+        # We are using a lambda function to create
+        # the SaveFavWindow class object inline. Saves 
+        # a few lines of code since it's just gonne be
+        # a time creation. We are also passing the
+        # reference of the GUI class object to the
+        # SavFavWindow. Reference SavFavWindow class
+        # in SaveFavGui.py for more info.
+        fav = guiButton(rootWindow, x=150, y=150,text ="Favorite", command=lambda: SaveFavWindow(400,300,self))
         
         # TextBox Creation for searching different locations
         inputtxt= guiTextbox(rootWindow, x=50, y=30, width=10,height=2)
@@ -53,19 +60,32 @@ class GUI:
         # and call __checkDisplay() to update weather info on the screen.
         def __locationRetrival():
             location = inputtxt.textRetrive()
-            self.__checkDisplay(location)
+            self.checkDisplay(location)
 
-        # Search Location Button Creation
+        # Search Location Button Creation.
+        # It calls the __locationRetrieval() function
+        # used to retrieve data from textbox then
+        # perform the checkDisplay() function.
         saveButton = guiButton(rootWindow, x=150, y= 30, text="Search", command=__locationRetrival)
 
-        # Fetch and display the weather data
-        self.__checkDisplay()
+        # Open the default.txt file and read the default location to a variable.
+        with open("default.txt", "r") as file1:
+            data = file1.readlines()
+        file1.close()
+        
+        # Fetch and display the weather data for the default location or if
+        # no default is set, use the program default setting.
+        if data:
+            location = data[0].strip()
+            self.checkDisplay(location)
+        else:
+            self.checkDisplay()
 
         # Run the application
         rootWindow.mainloop()  #mainloop() will actively listen for user event such as mouse click and so on. This function will keep the window open and make our program responsive to user actions. Window is only closed when we click on the "x" button top right.
 
     # Function to update the weather display
-    def __checkDisplay(self,location="Miami"):
+    def checkDisplay(self,location="Miami"):
         api_client=API()   #creating the API object so we can use to retrieve weather info
         weather_data = api_client.getWeather(location)
         self.weather_label_city.config(text=weather_data[0])
@@ -77,7 +97,3 @@ class GUI:
 
         self.weather_label_image.config(image=photo)
         self.weather_label_image.image = photo
-
-        
-        
-
