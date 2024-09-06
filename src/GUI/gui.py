@@ -7,6 +7,7 @@ from GUI.Button import guiButton
 from GUI.Textbox import guiTextbox
 from GUI.Label import guiLabel
 from ImageSelect.ImageSelect import ImageSelect
+from DataAccess.DataAccess import DataAccess
 
 class GUI:
     #constructor used to set the size of the window frame
@@ -39,7 +40,7 @@ class GUI:
         self.weather_label_image.pack(pady=10)
 
         # Using the button class Create a button which will be used to toggle current to 7-day forecast
-        toggle_button = guiButton(rootWindow, x=700, y=30,text="7-day", command=self.checkDisplay)
+        sevenDayButton = guiButton(rootWindow, x=700, y=30,text="7-day", command=None)
 
         # a button widget which will open a 
         # new window on button click.
@@ -50,29 +51,23 @@ class GUI:
         # reference of the GUI class object to the
         # SavFavWindow. Reference SavFavWindow class
         # in SaveFavGui.py for more info.
-        fav = guiButton(rootWindow, x=150, y=150,text ="Favorite", command=lambda: SaveFavWindow(400,300,self))
+        favButton = guiButton(rootWindow, x=600, y=30,text ="Favorite", command=lambda: SaveFavWindow(400,300,self))
         
         # TextBox Creation for searching different locations
         inputtxt= guiTextbox(rootWindow, x=50, y=30, width=10,height=2)
-        
-        # This function serves to link the functioanlity from button to textbox.
-        # When the button is clicked, it'll retrieve the content from the textbox
-        # and call __checkDisplay() to update weather info on the screen.
-        def __locationRetrival():
-            location = inputtxt.textRetrive()
-            self.checkDisplay(location)
 
         # Search Location Button Creation.
         # It calls the __locationRetrieval() function
         # used to retrieve data from textbox then
         # perform the checkDisplay() function.
-        saveButton = guiButton(rootWindow, x=150, y= 30, text="Search", command=__locationRetrival)
-
-        # Open the default.txt file and read the default location to a variable.
-        with open("default.txt", "r") as file1:
-            data = file1.readlines()
-        file1.close()
+        searchButton = guiButton(rootWindow, x=150, y= 30, text="Search", command=lambda:self.checkDisplay(inputtxt.textRetrive()))
         
+        # DataAccess creation. Use it to conduct file access
+        # so we can retrieve the user default location from
+        # default.txt
+        default = DataAccess("default.txt")
+        data=default.ReadData()
+     
         # Fetch and display the weather data for the default location or if
         # no default is set, use the program default setting.
         if data:

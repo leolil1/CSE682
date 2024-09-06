@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import END, Entry, IntVar, Radiobutton
 from GUI.Button import guiButton
 from GUI.Textbox import guiTextbox
+from DataAccess.DataAccess import DataAccess
 
 class SaveFavWindow:
     #constructor used to set the size of the window frame and 
@@ -17,7 +18,7 @@ class SaveFavWindow:
         # Use Tk() function from tkinter to create a favorite window that serve as the frame that holds everything inside
         self.rootWindow = tk.Toplevel()             # Use Toplevel() so the window appear on the top of the main window
         self.rootWindow.geometry(self.size)         # Use self.size to size the window to the values passed in from initialization
-        self.rootWindow.title("Favorite Locations") # Add a title to the window
+        self.rootWindow.title("Add Favorites") # Add a title to the window
         self.rootWindow.configure(bg='grey')        # Make background color same as the main window
         
         self.__openFavorite()                       # Call the private openFavorite() function to create the button and textbox
@@ -47,10 +48,13 @@ class SaveFavWindow:
         # at the textbox.
         location = self.inputtxt.textRetrive()
         
-        # Open the file and read all the data to a list.
-        with open(file, "r") as file1:
-            data = file1.readlines()
-        file1.close()
+        # DataAccess creation. Use it to conduct file access.
+        # We are accessing the file that's specified from "file"
+        # parameter
+        # The data returned is all the content on the file. It 
+        # should be in a list format.
+        File = DataAccess(file)
+        data=File.ReadData()
             
         # We then append the new location entered to the tail end of this
         # list.
@@ -62,12 +66,12 @@ class SaveFavWindow:
         if len(data) > numOfLocations:
             data = data[-numOfLocations:]
         
-        # We then open the file and write all the entries stored in
-        # the list back to the file which should only just be the 5 entries
-        # for save favorite, and 1 for set default.
-        with open(file, "w") as file1:
-            file1.writelines(data)
-        file1.close()
+        # At this point, we should have a new list of locations,
+        # and it's ready to be written back to the file. Since 
+        # it's the same file from what ReadData() operated
+        # on, we can continue to use the same object and 
+        # now call WriteData() function.
+        File.WriteData("w",data)
         
         # Call the genFavListTable function which will generate a new list
         # with the new fav location entered. Will only call it if we are
@@ -78,12 +82,15 @@ class SaveFavWindow:
     # Function to save one of the favorite to default.txt file
     def __saveDefault(self):
         # Get the currently selected location from the radio buttons
-        location = self.selected_location.get()
+        # and formatted it with a line break at the end.
+        location = self.selected_location.get()+"\n"
 
-        # Write the selected location to the default.txt file
-        with open("default.txt", "w") as file1:
-            file1.write(location + "\n")
-        file1.close()
+        # DataAccess creation. Use it to access default.txt.
+        # Then we write the one user selected location to
+        # the file. Which will then later be read to set up
+        # the default location for weather display.
+        default = DataAccess("default.txt")
+        default.WriteData("w", location)
 
     # Function to create the Favoraite location list
     def __genFavList(self):
@@ -92,13 +99,14 @@ class SaveFavWindow:
         # and build a completely new one now including the new 
         # data entered.
         for widget in self.rootWindow.place_slaves():
-            if widget.winfo_y() > 60:  # Consider any widget below y-axis<60 is the list
+            if widget.winfo_y() > 50:  # Consider any widget below y-axis<50 is the list
                 widget.destroy()       # Then we use destroy() to clear it from memory,
                                        # make room to create a completely new one.
 
-        # Read data from favoriate location file
-        with open("fav.txt", "r") as file1:
-            data = file1.readlines()
+        # DataAccess creation. Use it to access fav.txt.
+        # Then we read the content from the file.
+        favorite = DataAccess("fav.txt")
+        data=favorite.ReadData()
         
         # Use StringVar to keep track of the current values of the
         # selected button. This value will later be passed back to
@@ -128,22 +136,26 @@ class SaveFavWindow:
     
     # Function to remove the favoriate locations.
     def __removeLocation(self, location):
-        # Read data from favoriate location file
-        with open("fav.txt", "r") as file1:
-            data = file1.readlines()
-        file1.close()
+        # DataAccess creation. Use it to access fav.txt.
+        # Then we read the content from the file.
+        favorite = DataAccess("fav.txt")
+        data=favorite.ReadData()
 
-        # Remove the selected location from the list
+        # Use a for loop, iterate every item on "data"
+        # if it equals to location, then that's the one
+        # we want to remove, then we skip it from being
+        # added to this new list new_data.
         new_data = []
         for line in data:
             if line.strip() != location:
                 new_data.append(line)
-        data = new_data
 
-        # Write the updated list back to the file
-        with open("fav.txt", "w") as file1:
-            file1.writelines(data)
-        file1.close()
+        # After we dont removing from the list, we write
+        # the new_list back to the fav.txt file. Since 
+        # it's the same file from what ReadData() operated
+        # on, we can continue to use the same object and 
+        # now call WriteData() function.
+        favorite.WriteData("w", new_data)
 
         # Update the favorite locations list
         self.__genFavList()
