@@ -1,4 +1,5 @@
 import tkinter as tk
+
 # A Label class inherited from the tkinter Label
 # We wanted to customize this so we can have some
 # our own unique initial values. Or more future
