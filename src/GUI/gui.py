@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import END
 from PIL import Image, ImageTk  #using PIL to convert JPG images to something Tkinter can use 
-from API.api2 import API
+from API.api import API
 from GUI.SaveFavGui import SaveFavWindow
 from GUI.Button import guiButton
 from GUI.Textbox import guiTextbox
@@ -16,7 +16,7 @@ class GUI:
         self.height=height
         self.size = f"{width}x{height}"
     
-    def createGUI(self):
+    def CreateGUI(self):
         # Use Tk() function from tkinter to create a root window
         # that serve as the frame that holds everything inside
         rootWindow = tk.Tk()
@@ -36,7 +36,7 @@ class GUI:
         self.weather_label_status.pack(pady=10)
         self.weather_label_image = guiLabel(rootWindow)
         
-        self.weather_label_image.config(width=500, height=500)  # Set these dimensions as needed
+        self.weather_label_image.config(width=self.width, height=self.height)  # Set these dimensions as needed
         self.weather_label_image.pack(pady=10)
 
         # Using the button class Create a button which will be used to toggle current to 7-day forecast
@@ -60,7 +60,7 @@ class GUI:
         # It calls the __locationRetrieval() function
         # used to retrieve data from textbox then
         # perform the checkDisplay() function.
-        searchButton = guiButton(rootWindow, x=150, y= 30, text="Search", command=lambda:self.checkDisplay(inputtxt.textRetrive()))
+        searchButton = guiButton(rootWindow, x=150, y= 30, text="Search", command=lambda:self.CheckDisplay(inputtxt.TextRetrive()))
         
         # DataAccess creation. Use it to conduct file access
         # so we can retrieve the user default location from
@@ -72,23 +72,23 @@ class GUI:
         # no default is set, use the program default setting.
         if data:
             location = data[0].strip()
-            self.checkDisplay(location)
+            self.CheckDisplay(location)
         else:
-            self.checkDisplay()
+            self.CheckDisplay()
 
         # Run the application
         rootWindow.mainloop()  #mainloop() will actively listen for user event such as mouse click and so on. This function will keep the window open and make our program responsive to user actions. Window is only closed when we click on the "x" button top right.
 
     # Function to update the weather display
-    def checkDisplay(self,location="Miami"):
+    def CheckDisplay(self,location="Miami"):
         api_client=API()   #creating the API object so we can use to retrieve weather info
-        weather_data = api_client.getWeather(location)
+        weather_data = api_client.GetWeather(location)
         self.weather_label_city.config(text=weather_data[0])
         self.weather_label_temp.config(text=weather_data[1])
         self.weather_label_status.config(text=weather_data[2])
 
         backgroundImage = ImageSelect()
-        photo=backgroundImage.backgroundSelector(weather_data[2])
+        photo=backgroundImage.BackgroundSelector(weather_data[2])
 
         self.weather_label_image.config(image=photo)
         self.weather_label_image.image = photo
