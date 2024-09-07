@@ -21,9 +21,9 @@ class SaveFavWindow:
         self.rootWindow.title("Add Favorites") # Add a title to the window
         self.rootWindow.configure(bg='grey')        # Make background color same as the main window
         
-        self.__openFavorite()                       # Call the private openFavorite() function to create the button and textbox
+        self.__OpenFavorite()                       # Call the private openFavorite() function to create the button and textbox
         
-    def __openFavorite(self):
+    def __OpenFavorite(self):
         # Create a textbox allow user
         # to enter city location info
         self.inputtxt = guiTextbox(self.rootWindow, x=20, y=20, width=10,height=2)
@@ -31,22 +31,22 @@ class SaveFavWindow:
         # Create a button when user click it'll save the entry
         # in the textbox to the fav.txt file. We allow 5 favs
         # so 5 entry is specified as the second parameter.
-        self.saveButton = guiButton(self.rootWindow, x=150, y=20, text="Save To Favorites", command =lambda: self.__writeData("fav.txt",5))
+        self.saveButton = guiButton(self.rootWindow, x=150, y=20, text="Save To Favorites", command =lambda: self.__WriteData("fav.txt",5))
         
         # Create a button when user click it'll set the default
         # to the entry in the textbox. The default location info
         # is saved to default.txt. And only 1 entry is needed
         # for default.
-        self.defaultButton = guiButton(self.rootWindow, x=300, y=20, text="Set As Default", command=self.__saveDefault)
+        self.defaultButton = guiButton(self.rootWindow, x=300, y=20, text="Set As Default", command=self.__SaveDefault)
         
         # Initial Fav location list
         self.__genFavList()
     
     # Function to save data to a file and then call __genFavList to update the list with the new data
-    def __writeData(self,file,numOfLocations):
+    def __WriteData(self,file,numOfLocations):
         # Use the textRetrieve() function from Textbox class to retrieve any data entered
         # at the textbox.
-        location = self.inputtxt.textRetrive()
+        location = self.inputtxt.TextRetrive()
         
         # DataAccess creation. Use it to conduct file access.
         # We are accessing the file that's specified from "file"
@@ -80,7 +80,7 @@ class SaveFavWindow:
             self.__genFavList()
     
     # Function to save one of the favorite to default.txt file
-    def __saveDefault(self):
+    def __SaveDefault(self):
         # Get the currently selected location from the radio buttons
         # and formatted it with a line break at the end.
         location = self.selected_location.get()+"\n"
@@ -92,8 +92,8 @@ class SaveFavWindow:
         default = DataAccess("default.txt")
         default.WriteData("w", location)
 
-    # Function to create the Favoraite location list
-    def __genFavList(self):
+    # Function to create/update the Favoraite location list
+    def __UpdateTable(self):
         # In order to display new saved favorite data, 
         # the easiest way is to simply destroy the old list, 
         # and build a completely new one now including the new 
@@ -128,14 +128,14 @@ class SaveFavWindow:
                 radio_button.place(x=45, y=60 + i * 30)
                 
                 # Create a list of buttons that will be used to remove favoriates.
-                deleteButton = guiButton(self.rootWindow, x=150, y=20,text ="x", command=lambda location=line: self.__removeLocation(location))
+                deleteButton = guiButton(self.rootWindow, x=150, y=20,text ="x", command=lambda location=line: self.__RemoveLocation(location))
                 # Because the buttonis inherited from tk button class, so we can then use 
                 # .place() function inherited from parent class to place these buttons 
                 # next to our radio buttons above.
                 deleteButton.place(x=20, y=60 + i * 30)
     
     # Function to remove the favoriate locations.
-    def __removeLocation(self, location):
+    def __RemoveLocation(self, location):
         # DataAccess creation. Use it to access fav.txt.
         # Then we read the content from the file.
         favorite = DataAccess("fav.txt")
@@ -158,4 +158,4 @@ class SaveFavWindow:
         favorite.WriteData("w", new_data)
 
         # Update the favorite locations list
-        self.__genFavList()
+        self.__UpdateTable()

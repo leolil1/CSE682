@@ -12,10 +12,10 @@ class DataAccess:
     #store it to our private variable which will then
     #be returned back to the caller
     with open(self.FileName, "r") as file1:
-            self.ReadData = file1.readlines()
+            self.ReturnData = file1.readlines()
     file1.close()
     #Once file reading is finished. The data is returned
-    return self.ReadData
+    return self.ReturnData
   
   # Function used to write data to a file (for now)
   # We gonne specify the name of the file to write to,

@@ -10,25 +10,25 @@ class ImageSelect:
     self.imagePath=None
 
   #Function to load the image then return it
-  def imageReturn(self, imagePath):
+  def ImageReturn(self, imagePath):
       # Check if the image is valid, if so return it
       if imagePath != "No Matching Weather Found":
           # Tkinter does not support JPG.
           # Since images are in JPG format, we have to first load it
           # then convert it using PhtoImage so tkinter can understand.
           tmp_photo = Image.open(imagePath)
-          tmp_photo = tmp_photo.resize((500, 500), Image.LANCZOS)
+          #tmp_photo = tmp_photo.resize((500, 500), Image.LANCZOS)
           photo = ImageTk.PhotoImage(tmp_photo)
           return photo
       else:
         return None
   
   #Function to select the photo based on weather condition
-  def backgroundSelector(self, weather):
+  def BackgroundSelector(self, weather):
       # Assign the correct image path based on the weather
       if "clear" in weather:
           self.imagePath = "Images\\Sunny.jpg"
-      elif "rain" in weather:
+      elif any(word in weather for word in ["rain", "thunderstorm"]):
           self.imagePath = "Images\\Rainy.jpg"
       elif any(word in weather for word in ["scattered", "broken", "few"]):
           self.imagePath = "Images\\PartlyCloudy.jpg"
@@ -39,5 +39,5 @@ class ImageSelect:
       else:
           self.imagePath = "No Matching Weather Found"
       
-      # Return the image
-      return self.imageReturn(self.imagePath)
+      # Call ImageReturn() to return the image
+      return self.ImageReturn(self.imagePath)
