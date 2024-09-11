@@ -40,13 +40,19 @@ class SaveFavWindow:
         self.defaultButton = guiButton(self.rootWindow, x=300, y=20, text="Set As Default", command=self.__SaveDefault)
         
         # Initial Fav location list
-        self.__genFavList()
+        self.__UpdateTable()
     
-    # Function to save data to a file and then call __genFavList to update the list with the new data
+    # Function to save data to a file and then call __UpdateTable to update the list with the new data
     def __WriteData(self,file,numOfLocations):
         # Use the textRetrieve() function from Textbox class to retrieve any data entered
         # at the textbox.
         location = self.inputtxt.TextRetrive()
+        
+        # If user entered none city info, then due to input validation, TextReteive
+        # will return None. So we will also do nothing here and just jump out of the
+        # function call.
+        if location is None:
+            return
         
         # DataAccess creation. Use it to conduct file access.
         # We are accessing the file that's specified from "file"
@@ -59,7 +65,7 @@ class SaveFavWindow:
         # We then append the new location entered to the tail end of this
         # list.
         data.append(location + "\n")
-        
+  
         # Because we only allow 5 fav locations, so we will only keep the 
         # last 5 entered locations on the list.
         # So you enter 5 for that, or 1 for set default location.
@@ -73,11 +79,11 @@ class SaveFavWindow:
         # now call WriteData() function.
         File.WriteData("w",data)
         
-        # Call the genFavListTable function which will generate a new list
+        # Call the UpdateTable function which will generate a new list
         # with the new fav location entered. Will only call it if we are
         # working with the favoriate list instead of setting default.
         if file=="fav.txt":
-            self.__genFavList()
+            self.__UpdateTable()
     
     # Function to save one of the favorite to default.txt file
     def __SaveDefault(self):

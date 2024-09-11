@@ -16,10 +16,21 @@ class guiTextbox:
     #User can also speicfy width & height to size it.
     self.inputtext=tk.Text(frame,width=width,height=height,bd=bd, relief=relief)
     self.inputtext.place(x=x,y=y)
-
+  
+  #Function used to validate user input. Since user
+  #should only be entering city names, then this
+  #should check user input isalpha() that's it.
+  def __UserInputValidation(self, text):
+        if text.isalpha():
+            return True
+          
   #Function that can be called to retrieve the content
   #entered on the textbox
   def TextRetrive(self):
     text=self.inputtext.get(1.0, "end-1c").strip()
     self.inputtext.delete(1.0, END)  # Clear the input box
-    return text
+    #Only return user input if it pass the input check
+    if self.__UserInputValidation(text):
+      return text
+    else:
+      return None
