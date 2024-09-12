@@ -127,9 +127,9 @@ class SaveFavWindow:
                 # Create radio buttons. text&value are all what was read from the file which should just be location info.
                 # We then use selected_location to track of that value for the current selected button.
                 # Indicatoron=0 means we are using a non-standard radiobutton.
-                # Command is to call the checkDisplay() function from the GUI class. We pass the location info of the
+                # Command is to call the CheckDisplay() function from the GUI class. We pass the location info of the
                 # current selected location to that function.
-                radio_button = Radiobutton(self.rootWindow, text=line, value=line, variable=self.selected_location, indicatoron=0,background="light blue",command=lambda:self.gui.checkDisplay(self.selected_location.get()))
+                radio_button = Radiobutton(self.rootWindow, text=line, value=line, variable=self.selected_location, indicatoron=0,background="light blue",command=lambda:self.gui.CheckDisplay(self.selected_location.get()))
                 # Position each radio button 30 pixels down
                 radio_button.place(x=45, y=60 + i * 30)
                 

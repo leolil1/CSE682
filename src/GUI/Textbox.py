@@ -21,7 +21,7 @@ class guiTextbox:
   #should only be entering city names, then this
   #should check user input isalpha() that's it.
   def __UserInputValidation(self, text):
-        if text.isalpha():
+        if all(part.isalpha() for part in text.split()):
             return True
           
   #Function that can be called to retrieve the content
